@@ -5,84 +5,129 @@ class Cookie:
         self.weight = weight
 
     def display_info(self):
-        print(f"Nombre de la galleta: {self.name} - Precio de galleta:Q{self.price} - Tamaño de galleta: {self.weight}(g)\n")
+        return f"Nombre de la galleta: {self.name} - Precio: Q{self.price} - Peso: {self.weight}g"
 
 class Filling:
     def __init__(self, filling_flavor):
         self.filling_flavor = filling_flavor
 
     def filling_description(self):
-        print(f"El sabor del relleno es {self.filling_flavor}.\n")
+        return f"El sabor del relleno es {self.filling_flavor}\n"
 
 class ChipCookie(Cookie):
     def __init__(self, name, price, weight, chip_amount):
         super().__init__(name, price, weight)
-        if chip_amount < 0:
-            raise ValueError("La cantidad de chispas no puede ser negativa.")
         self.chip_amount = chip_amount
 
     def display_info(self):
-        return f"Galleta con chispas: {self.name} - Precio: Q{self.price} - Peso: {self.weight}g - Chispas: {self.chip_amount}"
+        return f"{super().display_info()} - Chispas: {self.chip_amount}\n"
 
 class FilledCookie(Cookie, Filling):
-    def __init__(self, name, price, weight, chip_amount):
+    def __init__(self, name, price, weight, filling_flavor):
         Cookie.__init__(self, name, price, weight)
-        Filling.__init__(self, chip_amount)
+        Filling.__init__(self, filling_flavor)
+
+    def display_info(self):
+        return f"{super().display_info()} - Relleno: {self.filling_flavor}\n"
 
 class RegisterCookie:
     def __init__(self):
         self.cookies = []
 
     def add_cookie(self):
-        while True:
-            try:
-                while True: # Validar nombre y duplicados
-                    name_cookie = input("Nombre de la galleta: ").strip().lower()
-                    if name_cookie == "":
-                        print("No puede ingresar un nombre vacío, intente nuevamente.\n")
-                        continue
+        try:
+            name_cookie = input("Nombre de la galleta: ").strip()
+            if not name_cookie:
+                print("No puede ingresar un nombre vacío.\n")
+                return
+            for c in self.cookies:
+                if c.name.lower() == name_cookie.lower():
+                    print("La galleta ya existe.\n")
+                    return
 
-                    for cookie in self.cookies:
-                        if cookie.name == name_cookie:
-                            print("La galleta ya existe, intente nuevamente.\n")
-                            break
-                    else:
-                        break # Solo entra aquí si NO se ejecutó el break => no hay duplicado
+            price_cookie = float(input("Precio de la galleta: Q"))
+            if price_cookie <= 0:
+                print("El precio debe ser mayor que Q0.\n")
+                return
 
-                while True: # Validar precio
-                    try:
-                        price_cookie = float(input("Precio de la galleta: Q"))
-                        if price_cookie <= 0:
-                            print("El precio de la galleta debe ser mayor que Q0, intente nuevamente.\n")
-                            continue
-                        break
-                    except ValueError:
-                        print("Error: ingreso mal un valor, intente de nuevo.")
-                    except Exception as e:
-                        print(f"Ocurrió un error inesperado: {e}")
+            weight_cookie = float(input("Peso de la galleta (g): "))
+            if weight_cookie <= 0:
+                print("El peso debe ser mayor a 0g.\n")
+                return
+            cookie = Cookie(name_cookie, price_cookie, weight_cookie)
+            self.cookies.append(cookie)
+            print("Galleta registrada correctamente.\n")
 
-                while True: # Validar tamaño
-                    try:
-                        weight_cookie = float(input("Tamaño de la galleta (cm): "))
-                        if weight_cookie <= 0:
-                            print("El peso de la galleta debe ser mayor a 0 g, intente nuevamente.\n")
-                            continue
-                        break
-                    except ValueError:
-                        print("Error: ingreso mal un valor, intente de nuevo.")
-                    except Exception as e:
-                        print(f"Ocurrió un error inesperado: {e}")
+        except ValueError:
+            print("Error: ingreso mal un valor numérico.\n")
+        except Exception as e:
+            print(f"Ocurrió un error: {e}\n")
 
-                cookie = Cookie(name_cookie, price_cookie, weight_cookie) # Crear y agregar galleta
-                self.cookies.append(cookie)
-                print("Galleta registrada correctamente.\n")
-                cookie.display_info()
-                break
+    def add_chip_cookie(self):
+        try:
+            name_cookie = input("Nombre de la galleta: ").strip()
+            if not name_cookie:
+                print("No puede ingresar un nombre vacío.\n")
+                return
+            for c in self.cookies:
+                if c.name.lower() == name_cookie.lower():
+                    print("La galleta ya existe.\n")
+                    return
 
-            except Exception as e:
-                print(f"Error: {e}")
+            price_cookie = float(input("Precio de la galleta: Q"))
+            if price_cookie <= 0:
+                print("El precio debe ser mayor que Q0.\n")
+                return
 
-        cookie.display_info()
+            weight_cookie = float(input("Peso de la galleta (g): "))
+            if weight_cookie <= 0:
+                print("El peso debe ser mayor a 0g.\n")
+                return
+
+            chip_amount = float(input("Ingrese cuantas chipas quiere en la galleta: "))
+            if chip_amount < 0:
+                print("Las chispas deben de ser 0 o mayores de 0\n")
+
+            cookie = ChipCookie(name_cookie, price_cookie, weight_cookie, chip_amount)
+            self.cookies.append(cookie)
+            print("Galleta registrada correctamente.\n")
+
+        except ValueError:
+            print("Error: ingreso mal un valor numérico.\n")
+        except Exception as e:
+            print(f"Ocurrió un error: {e}\n")
+
+    def add_filling_cookie(self):
+        try:
+            name_cookie = input("Nombre de la galleta: ").strip()
+            if not name_cookie:
+                print("No puede ingresar un nombre vacío.\n")
+                return
+            for c in self.cookies:
+                if c.name.lower() == name_cookie.lower():
+                    print("La galleta ya existe.\n")
+                    return
+
+            price_cookie = float(input("Precio de la galleta: Q"))
+            if price_cookie <= 0:
+                print("El precio debe ser mayor que Q0.\n")
+                return
+
+            weight_cookie = float(input("Peso de la galleta (g): "))
+            if weight_cookie <= 0:
+                print("El peso debe ser mayor a 0g.\n")
+                return
+
+            filling_flavor = input("Ingrese el sabor del relleno: ")
+
+            cookie = FilledCookie(name_cookie, price_cookie, weight_cookie, filling_flavor)
+            self.cookies.append(cookie)
+            print("Galleta registrada correctamente.\n")
+
+        except ValueError:
+            print("Error: ingreso mal un valor numérico.\n")
+        except Exception as e:
+            print(f"Ocurrió un error: {e}\n")
 
     def display_cookies(self):
         if not self.cookies:
@@ -91,9 +136,25 @@ class RegisterCookie:
 
         print("\nLista de galletas registradas:")
         for i, cookie in enumerate(self.cookies, start=1):
-            print(f"{i}. ", end="")
-            cookie.display_info()
+            print(f"{i}. {cookie.display_info()}")
         print()
+
+    def search_cookie(self):
+        name_search = input("Ingrese el nombre de la galleta a buscar: ").strip().lower()
+        for cookie in self.cookies:
+            if cookie.name.lower() == name_search:
+                print(f"Galleta encontrada: {cookie.display_info()}\n")
+                return
+        print("No se encontró ninguna galleta con ese nombre.\n")
+
+    def delete_cookie(self):
+        name_delete = input("Ingrese el nombre de la galleta a eliminar: ").strip().lower()
+        for cookie in self.cookies:
+            if cookie.name.lower() == name_delete:
+                self.cookies.remove(cookie)
+                print("Galleta eliminada correctamente.\n")
+                return
+        print("No se encontró ninguna galleta con ese nombre.\n")
 
 register = RegisterCookie()
 
@@ -116,9 +177,11 @@ while True:
 
         case "2":
             print(f"- Registrar galleta con chispas -")
+            register.add_chip_cookie()
 
         case "3":
             print(f"- Registrar galleta rellena -")
+            register.add_filling_cookie()
 
         case "4":
             print(f"- Lista de galletas -")
@@ -126,9 +189,11 @@ while True:
 
         case "5":
             print(f"- Buscar galleta por nombre -")
+            register.search_cookie()
 
         case "6":
             print(f"- Eliminar galleta -")
+            register.delete_cookie()
 
         case "7":
             print(f"Saliendo del programa ...")
