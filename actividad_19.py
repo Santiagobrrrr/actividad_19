@@ -1,11 +1,33 @@
 class Cookie:
-    def __init__(self, name, price, size):
+    def __init__(self, name, price, weight):
         self.name = name
         self.price = price
-        self.size = size
+        self.weight = weight
 
     def display_info(self):
-        print(f"Nombre de la galleta: {self.name} - Precio de galleta:Q{self.price} - Tamaño de galleta: {self.size}(cm)\n")
+        print(f"Nombre de la galleta: {self.name} - Precio de galleta:Q{self.price} - Tamaño de galleta: {self.weight}(g)\n")
+
+class Filling:
+    def __init__(self, filling_flavor):
+        self.filling_flavor = filling_flavor
+
+    def filling_description(self):
+        print(f"El sabor del relleno es {self.filling_flavor}.\n")
+
+class ChipCookie(Cookie):
+    def __init__(self, name, price, weight, chip_amount):
+        super().__init__(name, price, weight)
+        if chip_amount < 0:
+            raise ValueError("La cantidad de chispas no puede ser negativa.")
+        self.chip_amount = chip_amount
+
+    def display_info(self):
+        return f"Galleta con chispas: {self.name} - Precio: Q{self.price} - Peso: {self.weight}g - Chispas: {self.chip_amount}"
+
+class FilledCookie(Cookie, Filling):
+    def __init__(self, name, price, weight, chip_amount):
+        Cookie.__init__(self, name, price, weight)
+        Filling.__init__(self, chip_amount)
 
 class RegisterCookie:
     def __init__(self):
@@ -41,9 +63,9 @@ class RegisterCookie:
 
                 while True: # Validar tamaño
                     try:
-                        size_cookie = float(input("Tamaño de la galleta (cm): "))
-                        if size_cookie <= 0:
-                            print("El tamaño de la galleta debe ser mayor a 0 cm, intente nuevamente.\n")
+                        weight_cookie = float(input("Tamaño de la galleta (cm): "))
+                        if weight_cookie <= 0:
+                            print("El peso de la galleta debe ser mayor a 0 g, intente nuevamente.\n")
                             continue
                         break
                     except ValueError:
@@ -51,7 +73,7 @@ class RegisterCookie:
                     except Exception as e:
                         print(f"Ocurrió un error inesperado: {e}")
 
-                cookie = Cookie(name_cookie, price_cookie, size_cookie) # Crear y agregar galleta
+                cookie = Cookie(name_cookie, price_cookie, weight_cookie) # Crear y agregar galleta
                 self.cookies.append(cookie)
                 print("Galleta registrada correctamente.\n")
                 cookie.display_info()
